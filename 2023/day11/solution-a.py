@@ -1,36 +1,26 @@
 from reader import read_problem
 import itertools
 
-
-def bfs(graph, node):
-  visited = []
-  queue = [] 
-  visited.append(node)
-  queue.append(node)
-
-  while queue:
-    m = queue.pop(0) 
-    print (m, end = " ") 
-
-    for neighbour in graph[m]:
-      if neighbour not in visited:
-        visited.append(neighbour)
-        queue.append(neighbour)
+def get_shortest_path(pair):
+  path_lenght = abs(pair[0][0] - pair[1][0]) + abs(pair[0][1] - pair[1][1])
+#   print("Path length between: {} and {}\n{}".format(pair[0], pair[1],path_lenght))
+  return path_lenght
 
 def find_galaxies(graph):
    galaxies = []
-   for row in graph:
-      for col in row:
-         if col[2] == "#":
-            galaxies.append((col[0], col[1]))
+   for y in range(len(graph)):
+      for x in range(len(graph[0])) :
+         if graph[y][x] == "#":
+            galaxies.append((x, y))
     
    return galaxies
 
 def print_graph(graph):
+    print("width: ", len(graph[0]), "height: ", len(graph))
     for row in graph:
       formated_row = ""
       for pos in row:
-         formated_row += pos[2]
+         formated_row += pos
       print(formated_row)
 
 def load_graph(content):
@@ -42,7 +32,7 @@ def load_graph(content):
     for i in range(len(temp_content)):
         row = []
         for j in range(len(temp_content[i])):
-           row.append((i, j, temp_content[i][j]))
+           row.append(temp_content[i][j])
         graph.append(row)
     return graph
 
@@ -52,43 +42,49 @@ def expand_universe(graph):
       temp_graph.append(row)
       is_empty_row = True
       for pos in row:
-        if pos[2] != ".":
+        if pos != ".":
             is_empty_row = False
+            break
       if is_empty_row:
         empty_row = []
-        for i in range(len(row)):
-           empty_row.append((row[i][0] + 1, row[i][1], "."))
+        for x in range(len(row)):
+           empty_row.append(".")
         temp_graph.append(empty_row)
 
-
-   temp_graph2 = temp_graph
-   for i in range(len(temp_graph[0])):
+   expanded_universe = list(temp_graph)
+   offset = 0
+   for x in range(len(temp_graph[0])):
       is_empty_col = True
-      for line in temp_graph:
-         if(line[i][2] != "."):
+      for y in range(len(temp_graph)):
+         if(temp_graph[y][x] != "."):
             is_empty_col = False
+            break
+      temp_rows = []
       if is_empty_col:
-         for row in temp_graph2:
-            row.insert(i + 1, (row[i][0] + 1, row[i][1], "."))
+         for row in expanded_universe:
+            temp_row = list(row)
+            temp_row.insert(x + offset , ".")
+            temp_rows.append(temp_row)
+         offset += 1
+         expanded_universe = list(temp_rows)
 
 
 
-   return temp_graph2
+   return expanded_universe
 
 
 def main():
     content = read_problem("input-example.txt")
     graph = load_graph(content)
-    print("orginal universe: ")
-    print_graph(graph)
     graph = expand_universe(graph)
-    print("expanded universe: ")
-    print_graph(graph)
     galaxies = find_galaxies(graph)
-    print(galaxies)
-    test = list(itertools.combinations(galaxies, 2))
-    print(len(test))
+    galaxy_pairs = list(itertools.combinations(galaxies, 2))
+    sum = 0
+    for pair in galaxy_pairs:
+       sum += get_shortest_path(pair)
 
+
+    print(sum)
 
 
 
