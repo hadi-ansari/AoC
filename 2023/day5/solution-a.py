@@ -1,6 +1,6 @@
 from reader import read_problem
 
-seeds, dictionaries = read_problem("input-real.txt")
+seeds, dictionaries = read_problem("input.txt")
 
 lowest_location = 100000000000
 
