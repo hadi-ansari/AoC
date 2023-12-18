@@ -13,16 +13,16 @@ rank_map = {
     "A": 13,
     "K": 12,
     "Q": 11,
-    "J": 10,
-    "T": 9,
-    "9": 8,
-    "8": 7,
-    "7": 6,
-    "6": 5,
-    "5": 4,
-    "4": 3,
-    "3": 2,
-    "2": 1
+    "T": 10,
+    "9": 9,
+    "8": 8,
+    "7": 7,
+    "6": 6,
+    "5": 5,
+    "4": 4,
+    "3": 3,
+    "2": 2,
+    "J": 1
 }
 
 def get_number_of_same_cards(hand):
@@ -32,11 +32,46 @@ def get_number_of_same_cards(hand):
     for i in range(len(hand)):
         temp_counter = op.countOf(temp_hand, hand[i])
         counter_map[hand[i]] = temp_counter
-        list(filter((hand[i]).__ne__, temp_hand))
 
     return counter_map
 
+def make_strongest_card_possible(hand):
+    counter_map = get_number_of_same_cards(hand)
+
+    if(counter_map["J"] == 1):
+        if 4 in counter_map.values():
+            return FIVE_OF_A_KIND
+        elif 3 in counter_map.values():
+            return FOUR_OF_A_KIND
+        elif 2 in counter_map.values() and list(counter_map.values()).count(2) == 2:
+            return FULL_HOUSE
+        elif 2 in counter_map.values() and list(counter_map.values()).count(2) == 1:
+            return THREE_OF_A_KIND
+        else:
+            return ONE_PAIR
+        
+    elif(counter_map["J"] == 2):
+        if 3 in counter_map.values():
+            return FIVE_OF_A_KIND
+        elif 2 in counter_map.values() and list(counter_map.values()).count(2) == 2:
+            return FOUR_OF_A_KIND
+        else:
+            return THREE_OF_A_KIND
+        
+    elif (counter_map["J"] == 3):
+        if 2 in counter_map.values():
+            return FIVE_OF_A_KIND
+        else:
+            return THREE_OF_A_KIND
+        
+    # 4 or 5 J in hand
+    else:
+        return FIVE_OF_A_KIND
+    
 def find_type(hand):
+    if "J" in hand:
+        return make_strongest_card_possible(hand)
+    
     counter_map = get_number_of_same_cards(hand)
 
     if 5 in counter_map.values():
@@ -55,7 +90,7 @@ def find_type(hand):
         return HIGH_CARD
     
 def sort_func(st):
-    offset = 10000000000
+    offset = 100 ** 5
     sum = 0
     for c in st:
         sum += (rank_map[c] * offset)
@@ -87,12 +122,31 @@ def rank_hands(hands):
     final_sorted_hands.reverse()
             
     return final_sorted_hands
+    
+def print_type(num):
+    if num == FIVE_OF_A_KIND:
+        print("FIVE OF A KIND")
+    elif num == FOUR_OF_A_KIND:
+        print("FOUR OF A KIND")
+    elif num == FULL_HOUSE:
+        print("FULL HOUSE")
+    elif num == THREE_OF_A_KIND:
+        print("THREE OF A KIND")
+    elif num == TWO_PAIR:
+        print("TWO PAIR")
+    elif num == ONE_PAIR:
+        print("ONE PAIR")
+    elif num == HIGH_CARD:
+        print("HIGH CARD")
 
+    
 def main():
     hands = read_problem("input.txt")
     typed_hands = []
+
     for hand in hands:
         typed_hands.append((find_type(hand[0]), hand[0], hand[1]))
+
     
     ranked_hands = rank_hands(typed_hands)
     ranked_hands.reverse()    
