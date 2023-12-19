@@ -2,7 +2,7 @@ from reader import read_problem
 import re
 
 def main():
-    content = read_problem("input.txt")
+    content = read_problem("input-a.txt")
     instructions = content[0].split()[0]
     road_graph = {}
 
@@ -10,6 +10,9 @@ def main():
         if not i < 2:
             splited_line = content[i].split("=")
             road_graph[splited_line[0].strip()] = tuple(re.findall('[A-Z]{3}', splited_line[1]))
+
+    # for l in road_graph:
+    #     print(l)
 
     current_position = 'AAA'
     steps = 0
