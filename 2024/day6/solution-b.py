@@ -1,4 +1,5 @@
 from reader import read_problem
+import copy
 
 def find_start(map):
     for y in range(len(map)):
@@ -11,6 +12,7 @@ def find_start(map):
 def print_map(map):
     for l in map:
         print(l)
+    print()
 
 
 def turn_right(map, pos):
@@ -69,17 +71,21 @@ def find_next(map, pos, dir):
             return map[pos[0]][pos[1] - 1]
         
 def act(map, pos, next):
-    if next == "#":
-
+    if next == "#" or next == "O":
         turn_right(map, pos)
         return pos
     else:
         return move_forward(map, pos)
 
+def has_loop(pos, dir, visited):
+    for v in visited:
+        if v[1] == dir and v[0] == pos:
+            return True
+
+    return False
 
 def tick(map, pos, visited):
       dir = None
-      visited.append(pos)
 
       if map[pos[0]][pos[1]] == "^":
         dir = "UP"
@@ -90,24 +96,63 @@ def tick(map, pos, visited):
       else:
         dir = "LEFT"
     
+      if has_loop(pos, dir, visited):
+          return True, pos
+
+      visited.add((pos, dir))
+      
+    
       next = find_next(map, pos, dir)
+
       if next:
-          return act(map, pos, next)
+          new_pos = act(map, pos, next)
+          return False, new_pos
       else:
-          return False
+          return False, False
           
 
 def main():
     map = read_problem("input.txt")
 
-    pos = find_start(map)
-    visited = []
+    initial_pos = find_start(map)
+    loop_counter = 0
+
+
+    visited = set()
+
+    pos = initial_pos
+    new_map = copy.deepcopy(map)
+
 
     while True:
-        pos = tick(map, pos, visited)
+        loop, pos = tick(new_map, pos, visited)
         if not pos:
             break
 
-    print("sum => ", len(set(visited)))
+    final = set()
+    for v in visited:
+        final.add(v[0])
+
+    counter = 0
+    for y, x in final:
+        counter += 1
+        if initial_pos[0] == y and initial_pos[1] == y:
+            continue
+        new_map = copy.deepcopy(map)
+        new_map[y][x] = "O"
+        visited = set()
+
+        pos = initial_pos
+
+        while True:
+            loop, pos = tick(new_map, pos, visited)
+            if loop:
+                loop_counter += 1
+                break
+            if not pos:
+                break
+
+    print("sum => ", loop_counter)
+
 
 main()
