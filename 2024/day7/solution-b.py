@@ -4,7 +4,7 @@ from itertools import product
 
 def find_product(list):
     total_operations_possible = len(list[1]) - 1
-    pro = product(["+", "*"], repeat=total_operations_possible)
+    pro = product(["+", "*", "||"], repeat=total_operations_possible)
    
     return pro
 
@@ -18,6 +18,8 @@ def is_true(list, pro):
 
             elif op == "+":
                 sum += int(list[1][i +1])
+            elif op == "||":
+                sum = int(str(sum) + list[1][i +1])
             i+=1
         
         if sum == int(list[0]):
