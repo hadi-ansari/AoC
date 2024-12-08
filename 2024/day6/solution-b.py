@@ -1,12 +1,17 @@
 from reader import read_problem
-import copy
 
 def find_start(map):
     for y in range(len(map)):
         for x in range(len(map[y])):
-            if map[y][x] == "^" or map[y][x]  == "<" or map[y][x]  == ">" or map[y][x]  == "v":
-                print("found gaurd at pos y: {}, x: {}".format(y, x))
-                return (y, x)
+            if map[y][x] == "^":
+                return (y, x), "UP"
+            elif map[y][x]  == ">":
+                return (y, x), "RIGHT"
+            elif  map[y][x]  == "v":
+                return (y, x), "DOWN"
+            elif map[y][x]  == "<":
+                return (y, x), "LEFT"
+              
     return False
 
 def print_map(map):
@@ -15,36 +20,26 @@ def print_map(map):
     print()
 
 
-def turn_right(map, pos):
-    if map[pos[0]][pos[1]] == "^":
-        map[pos[0]][pos[1]] = ">"
-    elif map[pos[0]][pos[1]]  == ">":
-        map[pos[0]][pos[1]] = "v"
-    elif map[pos[0]][pos[1]] == "v":
-        map[pos[0]][pos[1]] = "<"
+def turn_right(dir):
+    if dir == "UP":
+        return "RIGHT"
+    if dir == "RIGHT":
+       return "DOWN"
+    elif dir  == "DOWN":
+       return "LEFT"
     else:
-        map[pos[0]][pos[1]] = "^"
+        return "UP"
 
-def move_forward(map, pos):
-    gaurd = map[pos[0]][pos[1]] 
-    if map[pos[0]][pos[1]] == "^":
-        map[pos[0] - 1][pos[1]] = gaurd
-        map[pos[0]][pos[1]] = "."
+def move_forward(pos, dir):
+    if dir == "UP":
         return (pos[0] - 1, pos[1])
-    
-    elif map[pos[0]][pos[1]] == ">":
-        map[pos[0]][pos[1] + 1] = gaurd
-        map[pos[0]][pos[1]] = "."
+    elif dir == "RIGHT":
         return (pos[0], pos[1] + 1)
 
-    elif map[pos[0]][pos[1]] == "v":
-        map[pos[0] + 1][pos[1]] = gaurd
-        map[pos[0]][pos[1]] = "."
+    elif dir == "DOWN":
         return (pos[0] + 1, pos[1])
 
     else:
-        map[pos[0]][pos[1] - 1] = gaurd
-        map[pos[0]][pos[1]] = "."
         return (pos[0], pos[1] - 1)
 
 
@@ -70,12 +65,11 @@ def find_next(map, pos, dir):
         else:
             return map[pos[0]][pos[1] - 1]
         
-def act(map, pos, next):
+def act(pos, dir, next):
     if next == "#" or next == "O":
-        turn_right(map, pos)
-        return pos
+        return pos, turn_right(dir)
     else:
-        return move_forward(map, pos)
+        return move_forward(pos, dir), dir
 
 def has_loop(pos, dir, visited):
     if pos not in visited:
@@ -86,20 +80,9 @@ def has_loop(pos, dir, visited):
 
     return False
 
-def tick(map, pos, visited):
-      dir = None
-
-      if map[pos[0]][pos[1]] == "^":
-        dir = "UP"
-      elif map[pos[0]][pos[1]]  == ">":
-        dir = "RIGHT"
-      elif map[pos[0]][pos[1]] == "v":
-          dir = "DOWN"
-      else:
-        dir = "LEFT"
-    
+def tick(map, pos, dir, visited):
       if has_loop(pos, dir, visited):
-          return True, pos
+          return True, pos, dir
 
       if pos not in visited:
           visited[pos] = []
@@ -107,31 +90,27 @@ def tick(map, pos, visited):
       else:
           visited[pos].append(dir)
       
-    
       next = find_next(map, pos, dir)
 
       if next:
-          new_pos = act(map, pos, next)
-          return False, new_pos
+          new_pos, new_dir = act(pos, dir, next)
+          return False, new_pos, new_dir
       else:
-          return False, False
+          return False, False, dir
           
 
 def main():
     map = read_problem("input.txt")
 
-    initial_pos = find_start(map)
+    initial_pos, initial_dir = find_start(map)
     loop_counter = 0
-
-
     visited = {}
-
     pos = initial_pos
-    new_map = copy.deepcopy(map)
-
+    dir = initial_dir
+    map[pos[0]][pos[1]] = "."
 
     while True:
-        loop, pos = tick(new_map, pos, visited)
+        loop, pos, dir = tick(map, pos, dir, visited)
         if not pos:
             break
 
@@ -142,20 +121,19 @@ def main():
     for y, x in final:
         if initial_pos[0] == y and initial_pos[1] == x:
             continue
-        new_map = copy.deepcopy(map)
-        new_map[y][x] = "O"
+        map[y][x] = "O"
         visited = {}
-
         pos = initial_pos
+        dir = initial_dir
 
         while True:
-            loop, pos = tick(new_map, pos, visited)
+            loop, pos, dir = tick(map, pos, dir, visited)
             if loop:
                 loop_counter += 1
                 break
             if not pos:
                 break
-        new_map[y][x] = "."
+        map[y][x] = "."
         
 
     print("sum => ", loop_counter)
