@@ -78,8 +78,10 @@ def act(map, pos, next):
         return move_forward(map, pos)
 
 def has_loop(pos, dir, visited):
-    for v in visited:
-        if v[1] == dir and v[0] == pos:
+    if pos not in visited:
+       return False
+    for v in visited[pos]:
+        if v == dir:
             return True
 
     return False
@@ -99,7 +101,11 @@ def tick(map, pos, visited):
       if has_loop(pos, dir, visited):
           return True, pos
 
-      visited.add((pos, dir))
+      if pos not in visited:
+          visited[pos] = []
+          visited[pos].append(dir)
+      else:
+          visited[pos].append(dir)
       
     
       next = find_next(map, pos, dir)
@@ -118,7 +124,7 @@ def main():
     loop_counter = 0
 
 
-    visited = set()
+    visited = {}
 
     pos = initial_pos
     new_map = copy.deepcopy(map)
@@ -131,16 +137,14 @@ def main():
 
     final = set()
     for v in visited:
-        final.add(v[0])
+        final.add(v)
 
-    counter = 0
     for y, x in final:
-        counter += 1
-        if initial_pos[0] == y and initial_pos[1] == y:
+        if initial_pos[0] == y and initial_pos[1] == x:
             continue
         new_map = copy.deepcopy(map)
         new_map[y][x] = "O"
-        visited = set()
+        visited = {}
 
         pos = initial_pos
 
@@ -151,6 +155,8 @@ def main():
                 break
             if not pos:
                 break
+        new_map[y][x] = "."
+        
 
     print("sum => ", loop_counter)
 
