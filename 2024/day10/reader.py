@@ -7,8 +7,14 @@ def read_problem(file_name):
 
     for l in lines:
         temp = list(l.strip())
-        temp = [int(item) for item in temp]
-        stripped_lines.append(temp)
+
+        temp2 = []
+        for i in temp:
+            if i == ".":
+                temp2.append(-2)
+            else:
+                temp2.append(int(i))
+        stripped_lines.append(temp2)
 
     input_file.close()
 
