@@ -1,0 +1,12 @@
+NOT  VISITED y: 0 x: 0 which is R
+NOT  VISITED y: 0 x: 4 which is I
+NOT  VISITED y: 0 x: 6 which is C
+NOT  VISITED y: 0 x: 8 which is F
+NOT  VISITED y: 2 x: 0 which is V
+NOT  VISITED y: 3 x: 6 which is J
+NOT  VISITED y: 4 x: 7 which is C
+NOT  VISITED y: 4 x: 9 which is E
+NOT  VISITED y: 5 x: 2 which is I
+NOT  VISITED y: 7 x: 0 which is M
+NOT  VISITED y: 8 x: 4 which is S
+sum is =>  1930
