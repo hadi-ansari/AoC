@@ -3,14 +3,6 @@ from reader import read_problem
 X = 0
 Y = 1
 
-# UP RIGHT DOWN LEFT
-DIRS = [(0, -1), (1, 0), (0, 1), (-1, 0)]
-
-UP = 0
-RIGHT = 1
-DOWN = 2
-LEFT = 3
-
 POS_IDX = 0
 VELOCITY_IDX = 1
 
