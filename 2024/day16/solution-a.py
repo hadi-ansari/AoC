@@ -204,5 +204,4 @@ def main():
     number_of_turns = calculate_rotation_in_path(final_path, initial_dir)
     print("Lowest score => ", number_of_turns * 1000 + len(final_path) - 1)
 
-
 main()
