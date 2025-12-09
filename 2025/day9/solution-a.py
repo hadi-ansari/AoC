@@ -5,8 +5,6 @@ from itertools import combinations
 Y_INDEX = 0
 X_INDEX = 1
 
-distances = {}
-
 def print_grid(coordinates):
     max_x = 0
     max_y = 0
