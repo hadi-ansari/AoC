@@ -59,12 +59,8 @@ def read_problem(file_name):
             temp_buttons.append(temp_j)
 
         buttons = temp_buttons
-        temp_joltages = []
-        for c in joltages: 
-            if c != "{" and c != "}" and c != ",":
-                temp_joltages.append(int(c))
 
-        joltages = temp_joltages
+        joltages = [int(x) for x in joltages[1:-1].split(",")]
 
         machines.append([lights, buttons, joltages])
 
