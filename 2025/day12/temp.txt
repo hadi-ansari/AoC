@@ -1,0 +1,199 @@
+initial
+['#', '#', '#']
+['#', '#', '.']
+['#', '#', '.']
+
+Rotated to right 1 time(s)
+['#', '#', '#']
+['#', '#', '#']
+['.', '.', '#']
+
+Rotated to right 2 time(s)
+['.', '#', '#']
+['.', '#', '#']
+['#', '#', '#']
+
+Rotated to right 3 time(s)
+['#', '.', '.']
+['#', '#', '#']
+['#', '#', '#']
+
+Flipped vertically
+['#', '#', '.']
+['#', '#', '.']
+['#', '#', '#']
+
+Flipped horizontally
+['#', '#', '#']
+['.', '#', '#']
+['.', '#', '#']
+
+all possible shapes 6
+initial
+['#', '#', '#']
+['#', '#', '.']
+['.', '#', '#']
+
+Rotated to right 1 time(s)
+['.', '#', '#']
+['#', '#', '#']
+['#', '.', '#']
+
+Rotated to right 2 time(s)
+['#', '#', '.']
+['.', '#', '#']
+['#', '#', '#']
+
+Rotated to right 3 time(s)
+['#', '.', '#']
+['#', '#', '#']
+['#', '#', '.']
+
+Flipped vertically
+['.', '#', '#']
+['#', '#', '.']
+['#', '#', '#']
+
+Flipped horizontally
+['#', '#', '#']
+['.', '#', '#']
+['#', '#', '.']
+
+all possible shapes 6
+initial
+['.', '#', '#']
+['#', '#', '#']
+['#', '#', '.']
+
+Rotated to right 1 time(s)
+['#', '#', '.']
+['#', '#', '#']
+['.', '#', '#']
+
+Rotated to right 2 time(s)
+['.', '#', '#']
+['#', '#', '#']
+['#', '#', '.']
+
+Rotated to right 3 time(s)
+['#', '#', '.']
+['#', '#', '#']
+['.', '#', '#']
+
+Flipped vertically
+['#', '#', '.']
+['#', '#', '#']
+['.', '#', '#']
+
+Flipped horizontally
+['#', '#', '.']
+['#', '#', '#']
+['.', '#', '#']
+
+Flipped horisontally already exists
+Flipped vertically already exists
+all possible shapes 2
+initial
+['#', '#', '.']
+['#', '#', '#']
+['#', '#', '.']
+
+Rotated to right 1 time(s)
+['#', '#', '#']
+['#', '#', '#']
+['.', '#', '.']
+
+Rotated to right 2 time(s)
+['.', '#', '#']
+['#', '#', '#']
+['.', '#', '#']
+
+Rotated to right 3 time(s)
+['.', '#', '.']
+['#', '#', '#']
+['#', '#', '#']
+
+Flipped vertically
+['#', '#', '.']
+['#', '#', '#']
+['#', '#', '.']
+
+Flipped horizontally
+['.', '#', '#']
+['#', '#', '#']
+['.', '#', '#']
+
+Flipped horisontally already exists
+Flipped vertically already exists
+all possible shapes 4
+initial
+['#', '#', '#']
+['#', '.', '.']
+['#', '#', '#']
+
+Rotated to right 1 time(s)
+['#', '#', '#']
+['#', '.', '#']
+['#', '.', '#']
+
+Rotated to right 2 time(s)
+['#', '#', '#']
+['.', '.', '#']
+['#', '#', '#']
+
+Rotated to right 3 time(s)
+['#', '.', '#']
+['#', '.', '#']
+['#', '#', '#']
+
+Flipped vertically
+['#', '#', '#']
+['#', '.', '.']
+['#', '#', '#']
+
+Flipped horizontally
+['#', '#', '#']
+['.', '.', '#']
+['#', '#', '#']
+
+Flipped horisontally already exists
+Flipped vertically already exists
+all possible shapes 4
+initial
+['#', '#', '#']
+['.', '#', '.']
+['#', '#', '#']
+
+Rotated to right 1 time(s)
+['#', '.', '#']
+['#', '#', '#']
+['#', '.', '#']
+
+Rotated to right 2 time(s)
+['#', '#', '#']
+['.', '#', '.']
+['#', '#', '#']
+
+Rotated to right 3 time(s)
+['#', '.', '#']
+['#', '#', '#']
+['#', '.', '#']
+
+Flipped vertically
+['#', '#', '#']
+['.', '#', '.']
+['#', '#', '#']
+
+Flipped horizontally
+['#', '#', '#']
+['.', '#', '.']
+['#', '#', '#']
+
+Flipped horisontally already exists
+Flipped vertically already exists
+all possible shapes 2
+(4, 4)
+....
+....
+....
+....

@@ -24,7 +24,7 @@ def read_problem(file_name):
             x = (l.split(":")[0]).split("x")[0]
             y = (l.split(":")[0]).split("x")[1]
             temp_presents = l.split(":")[1].split()
-            region = {"size": (y,x), "presents": temp_presents}
+            region = {"size": (int(y),int(x)), "presents": temp_presents}
             regions.append(region)
         
     input_file.close()

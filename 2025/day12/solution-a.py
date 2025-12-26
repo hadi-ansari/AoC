@@ -2,6 +2,8 @@ from reader import read_problem
 import copy
 import functools
 
+VERBOSE = True
+
 Y_INDEX = 0
 X_INDEX = 1
 
@@ -34,10 +36,11 @@ def flipp_present_horizontally(present):
         row.reverse()
         flipped_present.append(row)
 
-    print("Flipped horizontally")
-
-    for l in flipped_present:
-        print(l)
+    if VERBOSE:
+        print("Flipped horizontally")
+        for l in flipped_present:
+            print(l)
+        print()
 
     
     return flipped_present
@@ -49,11 +52,11 @@ def flipp_present_vertically(present):
     for y in range(len(present) - 1, -1, -1):
         flipped_present.append(copy.deepcopy(present[y]))
 
-    print("Flipped vertically")
-
-    for l in flipped_present:
-        print(l)
-
+    if VERBOSE:
+        print("Flipped vertically")
+        for l in flipped_present:
+            print(l)
+        print()
     
     return flipped_present
 
@@ -69,10 +72,11 @@ def rotate_right(present, repeat = 1):
                rotated[y_counter][temp_x]= temp[y][x]
                y_counter += 1
                 
-
-    print("Rotated to righ {} time(s)".format(repeat))
-    for l in rotated:
-        print(l)
+    if VERBOSE:
+        print("Rotated to right {} time(s)".format(repeat))
+        for l in rotated:
+            print(l)
+        print()
     
     return rotated
 
@@ -85,22 +89,54 @@ def is_equal(p1, p2):
             
     return True
 
+def find_coordinates(shape, size):
+    print(size)
+    for y in range(size[Y_INDEX]):
+        temp = ""
+        for x in range(size[X_INDEX]):
+            temp += "."
+        print(temp)
+
+
 def main():
     sum = 0
     problem = read_problem("input-example-1.txt")
 
     # draw_problem(problem)
+    presents_all_combos = []
 
     for p in problem[SHAPES]:
         print("initial")
         for l in p:
             print(l)
-        # fh = flipp_present_horizontally(p)
-        # fv = flipp_present_vertically(p)
-        rr = rotate_right(p, 4)
+        print()
+      
+        all_possible_shapes = [p]
+        for i in range(1, 4):
+            temp_r = rotate_right(p, i)
+            if temp_r not in all_possible_shapes:
+                all_possible_shapes.append(temp_r)
+        fv = flipp_present_vertically(p)
+        fh = flipp_present_horizontally(p)
+        if fv not in all_possible_shapes:
+            all_possible_shapes.append(fv)
+        else:
+            print("Flipped horisontally already exists")
 
-        # print(is_equal(p, fh))
-        break
+        if fh not in all_possible_shapes:
+            all_possible_shapes.append(fh)
+        else:
+            print("Flipped vertically already exists")
+        
+        print("all possible shapes {}".format(len(all_possible_shapes)))
+        presents_all_combos.append(all_possible_shapes)
+    for region in problem[REGIONS]:
+        for presen_shapres in presents_all_combos:
+            for shape in presen_shapres:
+                coordinates = []
+                find_coordinates(shape, region[SIZE])
+                return
+
 
     # TBD
     print("Answer {}".format(sum))
