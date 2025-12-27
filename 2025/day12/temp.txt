@@ -1,199 +1,30 @@
-initial
-['#', '#', '#']
-['#', '#', '.']
-['#', '#', '.']
+All possible shapes index 0 is 4
+All possible shapes index 1 is 6
+All possible shapes index 2 is 2
+All possible shapes index 3 is 4
+All possible shapes index 4 is 4
+All possible shapes index 5 is 2
+==================================================
+Shape index 0
 
-Rotated to right 1 time(s)
-['#', '#', '#']
-['#', '#', '#']
-['.', '.', '#']
+It generated 120 different region states
+==================================================
+Shape index 1
 
-Rotated to right 2 time(s)
-['.', '#', '#']
-['.', '#', '#']
-['#', '#', '#']
+It generated 180 different region states
+==================================================
+Shape index 2
 
-Rotated to right 3 time(s)
-['#', '.', '.']
-['#', '#', '#']
-['#', '#', '#']
+It generated 60 different region states
+==================================================
+Shape index 3
 
-Flipped vertically
-['#', '#', '.']
-['#', '#', '.']
-['#', '#', '#']
+It generated 120 different region states
+==================================================
+Shape index 4
 
-Flipped horizontally
-['#', '#', '#']
-['.', '#', '#']
-['.', '#', '#']
+It generated 120 different region states
+==================================================
+Shape index 5
 
-all possible shapes 6
-initial
-['#', '#', '#']
-['#', '#', '.']
-['.', '#', '#']
-
-Rotated to right 1 time(s)
-['.', '#', '#']
-['#', '#', '#']
-['#', '.', '#']
-
-Rotated to right 2 time(s)
-['#', '#', '.']
-['.', '#', '#']
-['#', '#', '#']
-
-Rotated to right 3 time(s)
-['#', '.', '#']
-['#', '#', '#']
-['#', '#', '.']
-
-Flipped vertically
-['.', '#', '#']
-['#', '#', '.']
-['#', '#', '#']
-
-Flipped horizontally
-['#', '#', '#']
-['.', '#', '#']
-['#', '#', '.']
-
-all possible shapes 6
-initial
-['.', '#', '#']
-['#', '#', '#']
-['#', '#', '.']
-
-Rotated to right 1 time(s)
-['#', '#', '.']
-['#', '#', '#']
-['.', '#', '#']
-
-Rotated to right 2 time(s)
-['.', '#', '#']
-['#', '#', '#']
-['#', '#', '.']
-
-Rotated to right 3 time(s)
-['#', '#', '.']
-['#', '#', '#']
-['.', '#', '#']
-
-Flipped vertically
-['#', '#', '.']
-['#', '#', '#']
-['.', '#', '#']
-
-Flipped horizontally
-['#', '#', '.']
-['#', '#', '#']
-['.', '#', '#']
-
-Flipped horisontally already exists
-Flipped vertically already exists
-all possible shapes 2
-initial
-['#', '#', '.']
-['#', '#', '#']
-['#', '#', '.']
-
-Rotated to right 1 time(s)
-['#', '#', '#']
-['#', '#', '#']
-['.', '#', '.']
-
-Rotated to right 2 time(s)
-['.', '#', '#']
-['#', '#', '#']
-['.', '#', '#']
-
-Rotated to right 3 time(s)
-['.', '#', '.']
-['#', '#', '#']
-['#', '#', '#']
-
-Flipped vertically
-['#', '#', '.']
-['#', '#', '#']
-['#', '#', '.']
-
-Flipped horizontally
-['.', '#', '#']
-['#', '#', '#']
-['.', '#', '#']
-
-Flipped horisontally already exists
-Flipped vertically already exists
-all possible shapes 4
-initial
-['#', '#', '#']
-['#', '.', '.']
-['#', '#', '#']
-
-Rotated to right 1 time(s)
-['#', '#', '#']
-['#', '.', '#']
-['#', '.', '#']
-
-Rotated to right 2 time(s)
-['#', '#', '#']
-['.', '.', '#']
-['#', '#', '#']
-
-Rotated to right 3 time(s)
-['#', '.', '#']
-['#', '.', '#']
-['#', '#', '#']
-
-Flipped vertically
-['#', '#', '#']
-['#', '.', '.']
-['#', '#', '#']
-
-Flipped horizontally
-['#', '#', '#']
-['.', '.', '#']
-['#', '#', '#']
-
-Flipped horisontally already exists
-Flipped vertically already exists
-all possible shapes 4
-initial
-['#', '#', '#']
-['.', '#', '.']
-['#', '#', '#']
-
-Rotated to right 1 time(s)
-['#', '.', '#']
-['#', '#', '#']
-['#', '.', '#']
-
-Rotated to right 2 time(s)
-['#', '#', '#']
-['.', '#', '.']
-['#', '#', '#']
-
-Rotated to right 3 time(s)
-['#', '.', '#']
-['#', '#', '#']
-['#', '.', '#']
-
-Flipped vertically
-['#', '#', '#']
-['.', '#', '.']
-['#', '#', '#']
-
-Flipped horizontally
-['#', '#', '#']
-['.', '#', '.']
-['#', '#', '#']
-
-Flipped horisontally already exists
-Flipped vertically already exists
-all possible shapes 2
-(4, 4)
-....
-....
-....
-....
+It generated 60 different region states
