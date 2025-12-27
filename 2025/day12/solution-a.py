@@ -12,6 +12,22 @@ REGIONS = "regions"
 SIZE = "size"
 PRESENTS = "presents"
 
+def draw_region(size, coordinates):
+    final_region = []
+    for y in range(size[Y_INDEX]):
+        row = []
+        for x in range(size[X_INDEX]):
+            if (y, x) in coordinates:
+                row.append("#")
+            else:
+                row.append(".")
+        final_region.append(row)
+    for row in final_region:
+        print(row)
+
+    print()
+
+
 def draw_problem(problem):
     print("Presents shapes")
     for i in range(len(problem[SHAPES])):
@@ -97,7 +113,7 @@ def get_region_with_shape(shape, size):
         for x in range(len(shape)):
             if shape[y][x] == "#" and y + 1 > shape_h:
                 shape_h = y + 1
-            if shape[y][x] == "#" and x + 1 > shape_h:
+            if shape[y][x] == "#" and x + 1 > shape_w:
                 shape_w = x + 1
 
 
@@ -108,34 +124,36 @@ def get_region_with_shape(shape, size):
         print()
 
     coordinates = []
+    should_continue = True
     for y in range(size[Y_INDEX]):
         for x in range(size[X_INDEX]):
-           if size[Y_INDEX] - y >= shape_h and size[X_INDEX] - x >= shape_w:
+            if size[Y_INDEX] - y >= shape_h and size[X_INDEX] - x >= shape_w:
                coordinates.append((y, x))
+            elif size[X_INDEX] - x < shape_w:
+               break
+            elif size[Y_INDEX] - y < shape_h:
+               should_continue = False
+               break
+        if not should_continue:
+            break
+
 
     regions = []
 
     
     for p in coordinates:
-        shape_in_region_coordinates = []
+        region = []
         for y in range(len(shape)):
             for x in range(len(shape)):
                 if shape[y][x] == "#":
-                    shape_in_region_coordinates.append((y + p[Y_INDEX],x + p[X_INDEX]))
-
-        region = [["." for x in range(size[X_INDEX])] for y in range(size[Y_INDEX])]
-        for y in range(size[Y_INDEX]):
-            for x in range(size[X_INDEX]):
-                if (y, x) in shape_in_region_coordinates:
-                   region[y][x] = "#"
+                    region.append((y + p[Y_INDEX], x + p[X_INDEX]))
+                    
         regions.append(region)
-
-        if VERBOSE:
-            print("Region after placing shape in {} is:".format(p))
-            for l in region:
-                print(l)
-            print()
     
+    if VERBOSE:
+        for r in regions:
+            draw_region(size, r)
+
     return regions
 
 
@@ -145,7 +163,6 @@ def main():
 
     # draw_problem(problem)
     presents_all_combos = []
-    region_states = []
 
     for idx in range(len(problem[SHAPES])):
         p = problem[SHAPES][idx]
@@ -176,31 +193,46 @@ def main():
         presents_all_combos.append(all_possible_shapes)
 
     all_regions = []
-    for i in range(len(presents_all_combos)):
-        present_combo = presents_all_combos[i]
-        print("=" * 50)
-        print("Shape index {}".format(i))
+    
+    for region_idx in range(len(problem[REGIONS])):
+        sum_of_regions = 0
+        region = problem[REGIONS][region_idx]
+        print("*" * 60)
+        print("Region idx {} ({}x{})".format(region_idx, region[SIZE][X_INDEX], region[SIZE][Y_INDEX]))
+        print("*" * 60)
+        for i in range(len(presents_all_combos)):
+            present_combo = presents_all_combos[i]
+            # print("=" * 50)
+            # print("Shape index {}".format(i))
+            # print()
+            present_region = []
+            for shape in present_combo:
+                present_region += get_region_with_shape(shape, region[SIZE])
+
+            len_of_region = len(present_region)
+            # print("It generated {} different region states".format(len_of_region))
+            sum_of_regions += len_of_region
+            all_regions.append(present_region)
+        
         print()
-        present_region = []
-        for shape in present_combo:
-            present_region += get_region_with_shape(shape, problem[REGIONS][0][SIZE])
-
-        print("It generated {} different region states".format(len(present_region)))
-        all_regions.append(present_region)
-
-    return
-    for region in problem[REGIONS]:
+        print("all possible region states {}".format(sum_of_regions))
         for present_idx in range(len(region[PRESENTS])):
             present_count = region[PRESENTS][present_idx]
-            print("{}".format(present_count))
+            relevant_region = all_regions[present_idx]
+            if VERBOSE:
+                print("Number of presents {} of present index {}".format(present_count, present_idx))
+                print("All possible region states for this {}".format(len(relevant_region)))
+                for r in relevant_region:
+                    draw_region(region[SIZE], r)
+            
             ## TODO: solve the problem
             # for present_shapres in presents_all_combos:
             #     for shape in present_shapres:
             #         coordinates = []
             #         find_coordinates(shape, region[SIZE])
             #         return
+        # TODO: Remove this
         break
-
 
     # TBD
     print("Answer {}".format(sum))

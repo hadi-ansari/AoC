@@ -4,27 +4,9 @@ All possible shapes index 2 is 2
 All possible shapes index 3 is 4
 All possible shapes index 4 is 4
 All possible shapes index 5 is 2
-==================================================
-Shape index 0
+************************************************************
+Region idx 0 (4x4)
+************************************************************
 
-It generated 120 different region states
-==================================================
-Shape index 1
-
-It generated 180 different region states
-==================================================
-Shape index 2
-
-It generated 60 different region states
-==================================================
-Shape index 3
-
-It generated 120 different region states
-==================================================
-Shape index 4
-
-It generated 120 different region states
-==================================================
-Shape index 5
-
-It generated 60 different region states
+all possible region states 88
+Answer 0
