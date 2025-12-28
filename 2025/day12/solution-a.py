@@ -29,6 +29,27 @@ def draw_region(size, coordinates):
 
     print()
 
+def draw_shape(shape):
+    shape_w = 0
+    shape_h = 0
+
+    for coordinates in shape:
+        if coordinates[Y_INDEX] + 1 > shape_h:
+            shape_h = coordinates[Y_INDEX] + 1
+        if coordinates[X_INDEX] + 1 > shape_w:
+            shape_w = coordinates[X_INDEX] + 1
+
+    for y in range(shape_h):
+        row = []
+        for x in range(shape_w):
+            if (y, x) in shape:
+                row.append("#")
+            else:
+                row.append(".")
+        print(row)
+    print()
+
+
 def draw_problem(problem):
     print("Presents shapes")
     for i in range(len(problem[SHAPES])):
@@ -55,9 +76,7 @@ def flipp_present_horizontally(present):
 
     if VERBOSE:
         print("Flipped horizontally")
-        for l in flipped_present:
-            print(l)
-        print()
+        draw_shape(convert_shape(flipped_present))
 
     
     return flipped_present
@@ -70,16 +89,14 @@ def flipp_present_vertically(present):
 
     if VERBOSE:
         print("Flipped vertically")
-        for l in flipped_present:
-            print(l)
-        print()
+        draw_shape(convert_shape(flipped_present))
     
     return flipped_present
 
-def rotate_right(present, repeat = 1):
+def rotate_right(present, times = 1):
     rotated = copy.deepcopy(present)
 
-    for i in range(repeat):
+    for i in range(times):
         temp = copy.deepcopy(rotated)
         for y in range(len(temp)):
             y_counter = 0
@@ -89,10 +106,8 @@ def rotate_right(present, repeat = 1):
                y_counter += 1
                 
     if VERBOSE:
-        print("Rotated to right {} time(s)".format(repeat))
-        for l in rotated:
-            print(l)
-        print()
+        print("Rotated to right {} time(s)".format(times))
+        draw_shape(convert_shape(rotated))
     
     return rotated
 
@@ -108,19 +123,16 @@ def get_region_with_shape(shape, size):
     shape_w = 0
     shape_h = 0
 
-    for y in range(len(shape)):
-        for x in range(len(shape)):
-            if shape[y][x] == "#" and y + 1 > shape_h:
-                shape_h = y + 1
-            if shape[y][x] == "#" and x + 1 > shape_w:
-                shape_w = x + 1
+    for coordinates in shape:
+        if coordinates[Y_INDEX] + 1 > shape_h:
+            shape_h = coordinates[Y_INDEX] + 1
+        if coordinates[X_INDEX] + 1 > shape_w:
+            shape_w = coordinates[X_INDEX] + 1
 
 
     if VERBOSE:
         print("width {} and height {}".format(shape_w, shape_h))
-        for l in shape:
-            print(l)
-        print()
+        draw_shape(shape)
 
     coordinates = []
     should_continue = True
@@ -138,14 +150,11 @@ def get_region_with_shape(shape, size):
 
 
     regions = []
-
     
     for p in coordinates:
         region = []
-        for y in range(len(shape)):
-            for x in range(len(shape)):
-                if shape[y][x] == "#":
-                    region.append((y + p[Y_INDEX], x + p[X_INDEX]))
+        for shape_c in shape:
+                region.append((shape_c[Y_INDEX] + p[Y_INDEX], shape_c[X_INDEX] + p[X_INDEX]))
                     
         regions.append(region)
     
@@ -180,6 +189,16 @@ def all_fits(region, all_combos):
 def does_intersect(r1, r2):
     return not set(r1).isdisjoint(r2)
 
+# converts shapes in grid to shape in a list of coordinates
+def convert_shape(shape):
+    new_shape = []
+    for y in range(len(shape[Y_INDEX])):
+        for x in range(len(shape[X_INDEX])):
+            if shape[y][x] == "#":
+                new_shape.append((y,x))
+
+    return new_shape
+
 def main():
     sum = 0
     problem = read_problem("input-example-1.txt")
@@ -189,28 +208,22 @@ def main():
         p = problem[SHAPES][idx]
         if VERBOSE:
             print("initial")
-            for l in p:
-                print(l)
-            print()
+            draw_shape(convert_shape(p))
       
-        all_possible_shapes = [p]
+        all_possible_shapes = [convert_shape(p)]
         for present_idx in range(1, 4):
-            temp_r = rotate_right(p, present_idx)
-            if temp_r not in all_possible_shapes:
-                all_possible_shapes.append(temp_r)
-        fv = flipp_present_vertically(p)
-        fh = flipp_present_horizontally(p)
+            rotated_shape = convert_shape(rotate_right(p, present_idx))
+            if rotated_shape not in all_possible_shapes:
+                all_possible_shapes.append(rotated_shape)
+        fv = convert_shape(flipp_present_vertically(p))
+        fh = convert_shape(flipp_present_horizontally(p))
         if fv not in all_possible_shapes:
             all_possible_shapes.append(fv)
-        # else:
-        #     print("Flipped horisontally already exists")
 
         if fh not in all_possible_shapes:
             all_possible_shapes.append(fh)
-        # else:
-        #     print("Flipped vertically already exists")
         
-        print("All possible shapes index {} is {}".format(idx, len(all_possible_shapes)))
+        print("All possible shapes for index {} is {}".format(idx, len(all_possible_shapes)))
         presents_all_combos.append(all_possible_shapes)
 
     all_regions = []
@@ -218,38 +231,41 @@ def main():
     for region_idx in range(len(problem[REGIONS])):
         does_fit = True
         sum_of_regions = 0
+        time_complexity = 1
         region = problem[REGIONS][region_idx]
         print("*" * 60)
         print("Region idx {} ({}x{})".format(region_idx, region[SIZE][X_INDEX], region[SIZE][Y_INDEX]))
         print("*" * 60)
         for i in range(len(presents_all_combos)):
             present_combo = presents_all_combos[i]
-            # print("=" * 50)
-            # print("Shape index {}".format(i))
-            # print()
+            print("=" * 50)
+            print("Shape index {}".format(i))
+            print()
             present_region = []
             for shape in present_combo:
                 present_region += get_region_with_shape(shape, region[SIZE])
                
 
             len_of_region = len(present_region)
-            # print("It generated {} different region states".format(len_of_region))
+            print("It generated {} different placements".format(len_of_region))
             sum_of_regions += len_of_region
+            time_complexity *= len_of_region
             all_regions.append(present_region)
         
         print()
-        print("all possible region states {}".format(sum_of_regions))
+        print("In total region {} generated {} different placements".format(region_idx, sum_of_regions))
+        print("Time complexity is {} ".format(time_complexity))
         temp_region = []
         for present_idx in range(len(region[PRESENTS])):
             present_count = region[PRESENTS][present_idx]
             relevant_region = all_regions[present_idx]
             
             print("Number of presents {} of present index {}".format(present_count, present_idx))
-            print("All possible region states for this {}".format(len(relevant_region)))
+            print("All placements  for this {}".format(len(relevant_region)))
             if VERBOSE:
                 for r in relevant_region:
                     draw_region(region[SIZE], r)
-
+            break
             if present_count > 0:
                 all_possible_combos = list(itertools.combinations(relevant_region, present_count))
                 print(len(all_possible_combos))
@@ -266,7 +282,7 @@ def main():
             sum += 1
 
         break
-    
+    return
     all_combos = []
     for key in cheat_sheet:
         p = cheat_sheet[key]

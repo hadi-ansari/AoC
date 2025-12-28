@@ -130,8 +130,8 @@ def draw_region(size, coordinates):
 
 
 def solve(problem):
-    shapes = problem["shapes"]
-    regions = problem["regions"]
+    shapes = problem[SHAPES]
+    regions = problem[REGIONS]
     sum = 0
     variables = []
 
@@ -153,13 +153,9 @@ def solve(problem):
         fh = flipp_present_horizontally(p)
         if fv not in all_possible_shapes:
             all_possible_shapes.append(fv)
-        # else:
-        #     print("Flipped horisontally already exists")
 
         if fh not in all_possible_shapes:
             all_possible_shapes.append(fh)
-        # else:
-        #     print("Flipped vertically already exists")
         
         print("All possible shapes index {} is {}".format(idx, len(all_possible_shapes)))
         presents_all_combos.append(all_possible_shapes)
@@ -172,6 +168,7 @@ def solve(problem):
         print("*" * 60)
         print("Region idx {} ({}x{})".format(region_idx, region[SIZE][X_INDEX], region[SIZE][Y_INDEX]))
         print("*" * 60)
+        curr_reg = []
         for i in range(len(presents_all_combos)):
             present_combo = presents_all_combos[i]
             # print("=" * 50)
@@ -185,57 +182,57 @@ def solve(problem):
             len_of_region = len(present_region)
             # print("It generated {} different region states".format(len_of_region))
             sum_of_regions += len_of_region
-            all_regions.append(present_region)
+            curr_reg.append(present_region)
         
+        all_regions.append(curr_reg)
+        print("All possible placements {}".format(sum_of_regions))
         print()
-        print("all possible region states {}".format(sum_of_regions))
 
-
-    for region in regions:
-        buckets = [[[] for _ in range(region[SIZE][X_INDEX])] for _ in range(region[SIZE][Y_INDEX])]
-        region_variables = []
-        for y in range(region[SIZE][Y_INDEX]):
-            temp = []
-            for x in range(region[SIZE][X_INDEX]):
-                temp.append(Int("r-" + str(y) + str(x)))
-            region_variables.append(temp)
-
+    for region_idx in range(len(regions)):
         solver = Solver()
-        variables = []
-        for i in range(len(shapes)):
-            temp_variables = []
-            for j in range(len(all_regions[i])):
-                curr_region = all_regions[i]
-                new_var = Int("idx" + str(i) + "-" + "state" + str(j))
-                var = Bool("bool-idx" + str(i) + "-" + "state" + str(j))
-                increment = If(var, 1, 0)
+        region = regions[region_idx]
+        curr_all_regions = all_regions[region_idx]
 
-                for coordinates in curr_region:
-                    for c in coordinates:
-                        buckets[c[Y_INDEX]][c[X_INDEX]].append(increment)
-                temp_variables.append(new_var)
+        buckets = [[[] for _ in range(region[SIZE][X_INDEX])] for _ in range(region[SIZE][Y_INDEX])]
+        # region_variables = []
+        # for y in range(region[SIZE][Y_INDEX]):
+        #     temp = []
+        #     for x in range(region[SIZE][X_INDEX]):
+        #         temp.append(Int("r-" + str(y) + str(x)))
+        #     region_variables.append(temp)
+        condition = True
+        variables = []
+        for i in range(len(curr_all_regions)):
+            temp_variables = []
+            for j in range(len(curr_all_regions[i])):
+                curr_region = curr_all_regions[i][j]
+                var = Bool("bool-shape" + str(i) + "-" + "region" + str(j))
+                increment = If(var, 1, 0)
+                
+                # if condition:
+                #     print("coordinates", curr_region)
+                #     print("Region for shape index {} state {}".format(i, j))
+                #     draw_region(region[SIZE], curr_region)
+                #     condition = False
+                for c in curr_region:
+                    buckets[c[Y_INDEX]][c[X_INDEX]].append(increment)
+                temp_variables.append(var)
 
             variables.append(temp_variables)
 
         # Constraints
         for i in range (len(region[PRESENTS])):
-            for v in variables[i]:
-                solver.add(Or(v == 0, v == 1))
-            print("some of vars should be {}".format(region[PRESENTS][i]))
-            solver.add(Sum(variables[i]) == region[PRESENTS][i])
+            solver.add(AtMost(*variables[i], region[PRESENTS][i]))
+            solver.add(AtLeast(*variables[i], region[PRESENTS][i]))
 
         for r in range(region[SIZE][Y_INDEX]):
             for c in range(region[SIZE][X_INDEX]):
                 if buckets[r][c]:
-                    # Sum the list of If statements we collected for this cell
                     cell_sum = Sum(buckets[r][c])
-                    solver.add(cell_sum <= 1)
+                    solver.add(Or(cell_sum == 1, cell_sum == 0))
 
         if solver.check() == sat:
             sum += 1
-            model = solver.model()
-            print(model)
-        return sum
     return sum
 
 
@@ -243,7 +240,6 @@ def main():
     problem = read_problem("input-example-1.txt")
 
     answer = solve(problem)
-    
 
     print("Answer {}".format(answer))
 

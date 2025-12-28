@@ -1,0 +1,22 @@
+All possible shapes index 0 is 6
+All possible shapes index 1 is 6
+All possible shapes index 2 is 2
+All possible shapes index 3 is 4
+All possible shapes index 4 is 4
+All possible shapes index 5 is 2
+************************************************************
+Region idx 0 (12x5)
+************************************************************
+All possible placements 720
+
+************************************************************
+Region idx 1 (4x4)
+************************************************************
+All possible placements 96
+
+************************************************************
+Region idx 2 (12x5)
+************************************************************
+All possible placements 720
+
+Answer 2
