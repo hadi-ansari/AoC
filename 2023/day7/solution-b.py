@@ -9,6 +9,10 @@ TWO_PAIR = 3
 ONE_PAIR = 2
 HIGH_CARD = 1
 
+HAND_TYPE_INDEX = 0
+HAND_INDEX = 1
+HAND_BID_INDEX = 2
+
 rank_map = {
     "A": 13,
     "K": 12,
@@ -62,7 +66,7 @@ def make_strongest_card_possible(hand):
         if 2 in counter_map.values():
             return FIVE_OF_A_KIND
         else:
-            return THREE_OF_A_KIND
+            return FOUR_OF_A_KIND
         
     # 4 or 5 J in hand
     else:
@@ -99,62 +103,41 @@ def sort_func(st):
     return sum
     
 def sort_same_types(i, hands):
-    same_types = list(filter(lambda x: x[0] == i, hands))
-    same_types.sort(key=lambda x: sort_func(x[1]))
+    same_types = list(filter(lambda x: x[HAND_TYPE_INDEX] == i, hands))
+    same_types.sort(key=lambda x: sort_func(x[HAND_INDEX]))
+    same_types.reverse()
 
     return same_types
 
 def rank_hands(hands):
-    hands.sort(key=lambda x: x[0])
+    hands.sort(key=lambda x: x[HAND_TYPE_INDEX])
     hands.reverse()
 
     final_sorted_hands = []
 
-    for i in range(1, 8):
+    for i in range(FIVE_OF_A_KIND, HIGH_CARD - 1, -1):
         temp = sort_same_types(i, hands)
-        final_sorted_hands.append(temp)
+        final_sorted_hands.extend(temp)
 
-    final_sorted_hands = [
-            x
-            for xs in final_sorted_hands
-            for x in xs
-        ]
-    final_sorted_hands.reverse()
-            
     return final_sorted_hands
-    
-def print_type(num):
-    if num == FIVE_OF_A_KIND:
-        print("FIVE OF A KIND")
-    elif num == FOUR_OF_A_KIND:
-        print("FOUR OF A KIND")
-    elif num == FULL_HOUSE:
-        print("FULL HOUSE")
-    elif num == THREE_OF_A_KIND:
-        print("THREE OF A KIND")
-    elif num == TWO_PAIR:
-        print("TWO PAIR")
-    elif num == ONE_PAIR:
-        print("ONE PAIR")
-    elif num == HIGH_CARD:
-        print("HIGH CARD")
-
     
 def main():
     hands = read_problem("input.txt")
+
+    # list of (hand_type, hand, bid) items
     typed_hands = []
 
     for hand in hands:
-        typed_hands.append((find_type(hand[0]), hand[0], hand[1]))
-
+        hand_type = find_type(hand[0])
+        typed_hands.append((hand_type, hand[0], hand[1]))
     
     ranked_hands = rank_hands(typed_hands)
-    ranked_hands.reverse()    
     sum = 0
-    for i in range(len(ranked_hands)):
-        sum += ((i + 1) * ranked_hands[i][2])
+    max_rank = len(ranked_hands)
+
+    for i in range(max_rank):
+        sum += (max_rank - i) * ranked_hands[i][HAND_BID_INDEX]
 
     print(sum)
-
 
 main()
