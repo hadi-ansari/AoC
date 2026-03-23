@@ -74,7 +74,7 @@ def expand_universe(graph):
 
 
 def main():
-    content = read_problem("input-example.txt")
+    content = read_problem("input.txt")
     graph = load_graph(content)
     graph = expand_universe(graph)
     galaxies = find_galaxies(graph)

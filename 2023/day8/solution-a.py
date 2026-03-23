@@ -2,7 +2,7 @@ from reader import read_problem
 import re
 
 def main():
-    content = read_problem("input-a.txt")
+    content = read_problem("input.txt")
     instructions = content[0].split()[0]
     road_graph = {}
 

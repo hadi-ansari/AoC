@@ -4,7 +4,7 @@ import copy
 from math import lcm
 
 def main():
-    content = read_problem("input-b.txt")
+    content = read_problem("input.txt")
     instructions = content[0].split()[0]
     road_graph = {}
 
