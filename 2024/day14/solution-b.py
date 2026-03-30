@@ -84,7 +84,7 @@ def main():
     for i in range(8000):
         robots = tick(map_size, robots)
         ######################################################
-        # Answer is by checking all prints unti you find a 
+        # Answer is by checking all prints until you find a 
         # christmas tree (uncomment following the two lines of code) 
         # which was found in 7861 drawing of the map
         ######################################################
@@ -92,7 +92,7 @@ def main():
         # print(i + 1)
         # draw_map(map_size, robots)
 
-    answer = 7861
+    answer = 6516
     print("answer is => ", answer)
 
     
