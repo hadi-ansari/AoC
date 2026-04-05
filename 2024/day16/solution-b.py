@@ -1,99 +1,14 @@
 from reader import read_problem
 from enum import Enum
-from heapq import heapify, heappop, heappush
+import heapq
 
 # TOP RIGHT DOWN LEFT
 DIRS = Enum('DIRS', ["UP", "RIGHT", "DOWN", "LEFT"])
 
-UP_IDX = -1
-RIGHT_IDX = 1
-DOWN_IDX = 1
-LEFT_IDX = -1
-
-X = 0
-Y = 1
+X_INDEX = 0
+Y_INDEX = 1
 
 INFINITE = 9999999
-
-def find_neighbours(maze, pos):
-    neigbours = []
-    if pos[Y] < len(maze) - 1 and maze[pos[Y] + UP_IDX][pos[X]] == ".":
-        neigbours.append((pos[X], pos[Y] + UP_IDX))
-    if pos[Y] >= 1 and maze[pos[Y] + DOWN_IDX][pos[X]] == ".":
-        neigbours.append((pos[X], pos[Y] + DOWN_IDX))
-    if pos[X] < len(maze[pos[Y]]) + DOWN_IDX and maze[pos[Y]][pos[X] + RIGHT_IDX] == ".":
-        neigbours.append((pos[X] + RIGHT_IDX, pos[Y]))
-    if pos[X] >= 1 and maze[pos[Y]][pos[X] + LEFT_IDX] == ".":
-        neigbours.append((pos[X] + LEFT_IDX, pos[Y]))
-    return neigbours
-
-# Returns the new dir after moving from curr to next
-def get_new_dir(curr, next, curr_dir):
-    if curr_dir == DIRS.UP:
-        if next[X] > curr[X]:
-            return DIRS.RIGHT
-        elif next[X] < curr[X]:
-            return DIRS.LEFT
-        else:
-            return curr_dir
-        
-    if curr_dir == DIRS.DOWN:
-        if next[X] > curr[X]:
-            return DIRS.RIGHT
-        elif next[X] < curr[X]:
-            return DIRS.LEFT
-        else:
-            return curr_dir
-    
-    if curr_dir == DIRS.RIGHT:
-        if next[Y] > curr[Y]:
-            return DIRS.DOWN
-        elif next[Y] < curr[Y]:
-            return DIRS.UP
-        else:
-            return curr_dir
-        
-    if curr_dir == DIRS.LEFT:
-        if next[Y] > curr[Y]:
-            return DIRS.DOWN
-        elif next[Y] < curr[Y]:
-            return DIRS.UP
-        else:
-            return curr_dir
-
-def get_distance(curr, next, dir):
-    score = 1000
-    if dir == DIRS.UP:
-        if next[X] != curr[X]:
-            return score + 1
-        elif next[Y] > curr[Y]:
-            return score * 2 + 1
-        else:
-            return 1
-        
-    if dir == DIRS.DOWN:
-        if next[X] != curr[X]:
-            return score + 1
-        elif next[Y] < curr[Y]:
-            return score * 2 + 1
-        else:
-            return 1
-    
-    if dir == DIRS.RIGHT:
-        if next[Y] != curr[Y]:
-            return score + 1
-        elif next[X] < curr[X]:
-            return score * 2 + 1
-        else:
-            return 1
-        
-    if dir == DIRS.LEFT:
-        if next[Y] != curr[Y]:
-            return score + 1
-        elif next[X] > curr[X]:
-            return score * 2 + 1
-        else:
-            return 1
 
 def draw_maze(maze, start, end):
     for y in range(len(maze)):
@@ -109,7 +24,6 @@ def draw_maze(maze, start, end):
 
     print()
 
-
 def draw_maze_with_path(maze, path):
     for y in range(len(maze)):
         line = "{:4}".format(str(y))
@@ -124,124 +38,105 @@ def draw_maze_with_path(maze, path):
 
     print()
 
-def update_distance(distances, prev, curr, new_distance, new_dir):
-        if distances[curr][0] >= new_distance:
-            prev_nodes =  distances[curr][1]
-            prev_nodes.append(prev)
-            distances[curr] = (new_distance, prev_nodes, new_dir)
+def get_forward(x, y, d):
+    if d == DIRS.UP:
+        return x, y - 1
+    elif d == DIRS.DOWN:
+        return x, y + 1
+    elif d == DIRS.LEFT:
+        return x - 1, y
+    else:  # RIGHT
+        return x + 1, y
 
-def get_min_unvisited_node(distances, visited):
-    min_distance = INFINITE
-    min_node = None
+def turn_left(d):
+    if d == DIRS.UP: return DIRS.LEFT
+    if d == DIRS.LEFT: return DIRS.DOWN
+    if d == DIRS.DOWN: return DIRS.RIGHT
+    return DIRS.UP
 
-    for k in distances:
-        if distances[k][0] < min_distance and visited[k] == False:
-            min_distance = distances[k][0]
-            min_node = k
-    
-    return min_node
+def turn_right(d):
+    if d == DIRS.UP: return DIRS.RIGHT
+    if d == DIRS.RIGHT: return DIRS.DOWN
+    if d == DIRS.DOWN: return DIRS.LEFT
+    return DIRS.UP
 
-def find_path_to_start(distances, curr, start, final_path):
-    prev_nodes = distances[curr][1]
-
-    for p in prev_nodes:
-        if p not in final_path:
-            final_path.add(p)
-            if p == start:
-                return final_path
-
-            final_path = final_path | find_path_to_start(distances, p, start, final_path)
-
-    return final_path
-
-def get_prev_neighbour_in_same_dir(maze, curr, dir):
-    if dir == DIRS.UP:
-        if curr[Y] > 0 and maze[curr[Y] + DOWN_IDX][curr[X]] == ".":
-            return (curr[X], curr[Y] + DOWN_IDX)
-    if dir == DIRS.RIGHT:
-         if curr[X] > 0 and maze[curr[Y]][curr[X] + LEFT_IDX] == ".":
-            return (curr[X] + LEFT_IDX, curr[Y])
-    if dir == DIRS.DOWN:
-        if curr[Y] < len(maze) - 1 and maze[curr[Y] + UP_IDX][curr[X]] == ".":
-            return (curr[X], curr[Y] + UP_IDX)
-    if dir == DIRS.LEFT:
-         if curr[X] < len(maze[0]) - 1 and maze[curr[Y]][curr[X] + RIGHT_IDX] == ".":
-            return (curr[X] + RIGHT_IDX, curr[Y])
-    return None
-
-def get_next_neighbour_in_same_dir(maze, curr, dir):
-    if dir == DIRS.DOWN:
-        if curr[Y] > 0 and maze[curr[Y] + DOWN_IDX][curr[X]] == ".":
-            return (curr[X], curr[Y] + DOWN_IDX)
-    if dir == DIRS.LEFT:
-         if curr[X] > 0 and maze[curr[Y]][curr[X] + LEFT_IDX] == ".":
-            return (curr[X] + LEFT_IDX, curr[Y])
-    if dir == DIRS.UP:
-        if curr[Y] < len(maze) - 1 and maze[curr[Y] + UP_IDX][curr[X]] == ".":
-            return (curr[X], curr[Y] + UP_IDX)
-    if dir == DIRS.RIGHT:
-         if curr[X] < len(maze[0]) - 1 and maze[curr[Y]][curr[X] + RIGHT_IDX] == ".":
-            return (curr[X] + RIGHT_IDX, curr[Y])
-    return None
-
-# Adjusted dijkastra
-def dijkstra(maze, start, end, dir):
-    visited = {}
+def Solve(maze, start, end, initial_dir):
+    # State: (x, y, direction)
+    # distances maps state -> (cost, [predecessor_states])
     distances = {}
-    for y in range(len(maze)):
-        for x in range(len(maze[y])):
-            if maze[y][x] == "." and (x, y) != start:
-                distances[(x, y)] = (INFINITE, [], None) # distance, previous node and direction in the node
-            elif (x, y) == start:
-                distances[(x, y)] = (0, [], dir) # distance, previous node and direction in the node
-            visited[(x, y)] = False
+    start_state = (start[X_INDEX], start[Y_INDEX], initial_dir)
+    distances[start_state] = (0, [])
 
-    while True:
-        curr_node = get_min_unvisited_node(distances, visited)
+    # Priority queue: (cost, x, y, dir_value)
+    pq = [(0, start[X_INDEX], start[Y_INDEX], initial_dir.value)]
+    visited = set()
 
-        if not curr_node:
-            final_path = set()
-            final_path.add(end)
-            final_path = find_path_to_start(distances, end, start, final_path)
-            print("sum => ", len(final_path))
-            # draw_maze_with_path(maze, final_path)
-            break
-        
-        curr_dir = distances[curr_node][2]
-        curr_distance = distances[curr_node][0]
+    while pq:
+        cost, x, y, dv = heapq.heappop(pq)
+        d = DIRS(dv)
+        state = (x, y, d)
 
-        neighbours = find_neighbours(maze, curr_node)
+        if state in visited:
+            continue
+        visited.add(state)
 
-        for n in neighbours:
-            neighbour_dir = get_new_dir(curr_node, n, curr_dir)
-            neighbour_distance = get_distance(curr_node, n, curr_dir)
+        # Possible transitions:
+        # 1. Move forward (cost +1)
+        # 2. Turn left (cost +1000)
+        # 3. Turn right (cost +1000)
 
+        transitions = []
+        # Move forward
+        nx, ny = get_forward(x, y, d)
+        if 0 <= ny < len(maze) and 0 <= nx < len(maze[0]) and maze[ny][nx] == ".":
+            transitions.append(((nx, ny, d), cost + 1))
+        # Turn left
+        transitions.append(((x, y, turn_left(d)), cost + 1000))
+        # Turn right
+        transitions.append(((x, y, turn_right(d)), cost + 1000))
 
-            # This is because we want to find more nodes which might 
-            # lead to the same cost.
-            prev_neighbour_in_same_dir = get_prev_neighbour_in_same_dir(maze, curr_node, neighbour_dir)
-           
-            if prev_neighbour_in_same_dir and distances[prev_neighbour_in_same_dir][2]:
-                prev_neighbour_to_curr_distance = get_distance(prev_neighbour_in_same_dir, curr_node, distances[prev_neighbour_in_same_dir][2])
-                
-                if curr_distance + neighbour_distance == distances[prev_neighbour_in_same_dir][0] + prev_neighbour_to_curr_distance + 1:
-                    distances[curr_node][1].append(prev_neighbour_in_same_dir)
+        for new_state, new_cost in transitions:
+            if new_state in visited:
+                continue
+            if new_state not in distances or distances[new_state][0] > new_cost:
+                distances[new_state] = (new_cost, [state])
+                heapq.heappush(pq, (new_cost, new_state[0], new_state[1], new_state[2].value))
+            elif distances[new_state][0] == new_cost:
+                distances[new_state][1].append(state)
 
-            next_neighbour_in_same_dir = get_next_neighbour_in_same_dir(maze, n, neighbour_dir)
-            if next_neighbour_in_same_dir and distances[next_neighbour_in_same_dir][2]:
-                next_neighbour_to_curr_distance = get_distance(n, next_neighbour_in_same_dir, distances[next_neighbour_in_same_dir][2])
+    # Find min cost to reach end in any direction
+    min_end_cost = INFINITE
+    for d in DIRS:
+        s = (end[X_INDEX], end[Y_INDEX], d)
+        if s in distances:
+            min_end_cost = min(min_end_cost, distances[s][0])
 
-                if distances[next_neighbour_in_same_dir][0] == distances[curr_node][0] + next_neighbour_to_curr_distance + 1:
-                    distances[n][1].append(curr_node)
+    # Backtrack from all end states with minimum cost to collect all tiles on best paths
+    final_positions = set()
+    queue = []
+    visited_back = set()
+    for d in DIRS:
+        s = (end[X_INDEX], end[Y_INDEX], d)
+        if s in distances and distances[s][0] == min_end_cost:
+            queue.append(s)
+            visited_back.add(s)
 
-            update_distance(distances, curr_node, n, curr_distance + neighbour_distance, neighbour_dir)
+    while queue:
+        state = queue.pop()
+        final_positions.add((state[0], state[1]))
+        for prev_state in distances[state][1]:
+            if prev_state not in visited_back:
+                visited_back.add(prev_state)
+                queue.append(prev_state)
 
-        visited[curr_node] = True
+    print("sum => ", len(final_positions))
+    draw_maze_with_path(maze, final_positions)
 
 
 def main():
     maze, start, end = read_problem("input.txt")
 
-    dijkstra(maze, start, end, DIRS.RIGHT)
+    Solve(maze, start, end, DIRS.RIGHT)
+
 
 main()
